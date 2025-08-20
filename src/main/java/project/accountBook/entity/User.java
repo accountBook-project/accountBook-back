@@ -2,7 +2,9 @@ package project.accountBook.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +23,7 @@ public class User extends BaseTimeEntity {
     private String username;
     private String email;
     private String role;
+    private String password;
     private int total_point;
 
 
@@ -35,6 +39,12 @@ public class User extends BaseTimeEntity {
         this.userKey = userKey;
         this.username = username;
         this.email = email;
+        this.role = role;
+    }
+
+    public User(String username, String password, String role) {
+        this.username = username;
+        this.password = password;
         this.role = role;
     }
 

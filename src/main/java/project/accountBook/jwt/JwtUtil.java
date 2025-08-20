@@ -2,6 +2,7 @@ package project.accountBook.jwt;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -19,12 +20,11 @@ public class JwtUtil {
     }
 
     public String getUserKey(String token) {
-
         return Jwts
                 .parser()
                 .verifyWith(secretKey)
                 .build()
-                .parseSignedClaims(token).getPayload().get("userKey").toString();
+                .parseSignedClaims(token).getPayload().get("sub").toString();
     }
     public String getRole(String token) {
 
@@ -47,11 +47,22 @@ public class JwtUtil {
 
     public String createJwt(String userKey, String role, Long expiredMs) {
         return Jwts.builder()
-                .claim("userKey", userKey)
+                .claim("sub", userKey)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
+    }
+    public ResponseCookie createdCookie(String key, String value) {
+        ResponseCookie cookie = ResponseCookie.from(key, value)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(60*60*60L)
+                .sameSite("Strict")
+                .build();
+
+        return cookie;
     }
 }

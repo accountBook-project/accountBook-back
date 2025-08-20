@@ -45,8 +45,9 @@ public class SecurityConfig {
 
                     return configuration;
                 }))
+                .formLogin(auth -> auth.disable())
                 .csrf(auth -> auth.disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/", "/api/join", "/api/login").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2 -> oauth2
