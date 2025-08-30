@@ -18,20 +18,20 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/api/join")
-    public ResponseEntity<String> join(@RequestBody @Valid JoinRequest loginRequest, BindingResult result) {
+    public ResponseEntity<String> join(@RequestBody @Valid JoinRequest joinRequest, BindingResult result) {
         if(result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getFieldErrors().toString());
         }
-        else if (userService.userNameDuplicationCheck(loginRequest.getUsername()) != null) {
+        else if (userService.userNameDuplicationCheck(joinRequest.getUsername()) != null) {
             return ResponseEntity.badRequest().body("아이디가 이미 존재합니다.");
         }
-        else if (!loginRequest.getPw().equals(loginRequest.getCfpw())) {
+        else if (!joinRequest.getPw().equals(joinRequest.getCfpw())) {
             return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
         }
 
-        Long id = userService.join(loginRequest);
+        Long id = userService.join(joinRequest);
 
-        return ResponseEntity.ok().body("id: " + id + "\n" + "pw: " + loginRequest.getPw());
+        return ResponseEntity.ok().body("id: " + id + "\n" + "pw: " + joinRequest.getPw());
     }
 
     @GetMapping("/api/login")

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class User extends BaseTimeEntity {
     @Column(name="user_id")
     private Long id;
 
-    private String userKey; // provicder + id oauth2식별자
+    private String userKey; // provider + id oauth2 식별자
     private String username;
     private String email;
     private String role;
@@ -27,8 +28,6 @@ public class User extends BaseTimeEntity {
     private int total_point;
 
 
-    @OneToMany(mappedBy = "user")
-    private List<AccountBook> accountBooks = new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<DailyStat> dailyStats = new ArrayList<>();
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

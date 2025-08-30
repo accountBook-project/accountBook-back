@@ -1,4 +1,4 @@
-package project.accountBook.jwt;
+package project.accountBook.login;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ public class JwtUtil {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String getUserKey(String token) {
+    public String getUserId(String token) {
         return Jwts
                 .parser()
                 .verifyWith(secretKey)
@@ -45,21 +45,22 @@ public class JwtUtil {
 
 
 
-    public String createJwt(String userKey, String role, Long expiredMs) {
+    public String createJwt(String userId, String token, String role, Long expiredMs) {
         return Jwts.builder()
-                .claim("sub", userKey)
+                .claim("sub", userId)
+                .claim("token", token)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
     }
-    public ResponseCookie createdCookie(String key, String value) {
+    public ResponseCookie createdCookie(String key, String value, Long maxAge) {
         ResponseCookie cookie = ResponseCookie.from(key, value)
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
-                .maxAge(60*60*60L)
+                .maxAge(maxAge)
                 .sameSite("Strict")
                 .build();
 

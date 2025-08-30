@@ -35,7 +35,7 @@ class UserServiceTest {
     
     
     @Test
-    public void joinTest() throws Exception {
+    public void 회원가입_테스트() throws Exception {
         //given
         JoinRequest joinRequest = new JoinRequest();
         joinRequest.setUsername("sjsj0718");
@@ -48,7 +48,7 @@ class UserServiceTest {
         Assertions.assertThat(join).isEqualTo(user.getId());
     }
     @Test
-    public void joinControllerMockMvcTest() throws Exception {
+    public void 회원가입_MockMvc_테스트() throws Exception {
         //given
         JoinRequest joinRequest = new JoinRequest();
         joinRequest.setUsername("sjsj0718");
@@ -69,7 +69,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void loginJwtTest() throws Exception {
+    public void 로그인_MockMvc_테스트() throws Exception {
         //given
         JoinRequest joinRequest = new JoinRequest();
         joinRequest.setUsername("sjsj0718");
@@ -85,7 +85,7 @@ class UserServiceTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk())
-                .andExpect(header().stringValues("Set-cookie", Matchers.hasItem(Matchers.containsString("Authorization="))));
+                .andExpect(header().stringValues("Set-Cookie", Matchers.hasItem(Matchers.containsString("access="))));
 
         //then
     }

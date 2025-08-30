@@ -1,5 +1,5 @@
 package project.accountBook.entity;
 
 public enum EmotionType {
-    A
+    sad, happy, angry
 }

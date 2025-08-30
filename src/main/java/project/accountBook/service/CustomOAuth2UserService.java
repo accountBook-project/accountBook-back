@@ -15,12 +15,12 @@ import project.accountBook.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
 
     @Override
-    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
@@ -39,23 +39,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String userKey = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
         User existUser = userRepository.findByUserKey(userKey).orElse(null);
 
+        UserDto userDto = new UserDto();
+
         if(existUser == null) {
             User user = new User(userKey, oAuth2Response.getName(), oAuth2Response.getEmail(), "ROLE_USER");
 
-            userRepository.save(user);
+            User savedUser = userRepository.save(user);
+
+            userDto.setUserId(savedUser.getId().toString());
+            userDto.setUsername(oAuth2Response.getName());
+            userDto.setRole("ROLE_USER");
         }
         else {
             existUser.check(oAuth2Response.getName(), oAuth2Response.getEmail());
         }
 
-
-        UserDto userDto = new UserDto();
-        userDto.setUserKey(userKey);
-        userDto.setUsername(oAuth2Response.getName());
-        userDto.setRole("ROLE_USER");
-
-
-
-        return new CustomOAuth2User(userDto);
+        return new CustomUserPrincipal(userDto);
     }
 }

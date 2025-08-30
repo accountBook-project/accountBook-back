@@ -1,4 +1,4 @@
-package project.accountBook.oauth2;
+package project.accountBook.login;
 
 
 import jakarta.servlet.ServletException;
@@ -8,8 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import project.accountBook.dto.CustomOAuth2User;
-import project.accountBook.jwt.JwtUtil;
+import project.accountBook.dto.CustomUserPrincipal;
 
 import java.io.IOException;
 
@@ -22,18 +21,19 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
+        CustomUserPrincipal customUserDetails = (CustomUserPrincipal) authentication.getPrincipal();
 
-        String userKey = customUserDetails.getUserKey();
+        String userId = customUserDetails.getUserId();
         String role = authentication.getAuthorities().stream()
                 .map(grantedAuthority -> grantedAuthority.getAuthority())
                 .findFirst()
                 .orElse("ROLE_USER");
 
 
-        String token = jwtUtil.createJwt(userKey, role, 60 * 60 * 60L);
-
-        response.addHeader("Set-Cookie", jwtUtil.createdCookie("Authorization", token).toString());
+        String accessToken = jwtUtil.createJwt(userId.toString(),"access", role, 60L * 5 * 1000);
+        String refreshToken = jwtUtil.createJwt(userId.toString(),"refresh", role, 365L * 24 * 3600000);
+        response.addHeader("Set-Cookie", jwtUtil.createdCookie("access", accessToken, 60L * 5).toString());
+        response.addHeader("Set-Cookie", jwtUtil.createdCookie("refresh", refreshToken, 365L * 24 * 3600).toString());
         response.sendRedirect("http://localhost:8080/");
 
     }
