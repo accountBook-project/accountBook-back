@@ -11,6 +11,8 @@ import project.accountBook.dto.JoinRequest;
 import project.accountBook.dto.LoginRequest;
 import project.accountBook.service.UserService;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -31,17 +33,20 @@ public class UserController {
 
         Long id = userService.join(joinRequest);
 
-        return ResponseEntity.ok().body("id: " + id + "\n" + "pw: " + joinRequest.getPw());
+        return ResponseEntity.ok().body("id: " + id + "\n" + "username: " + joinRequest.getUsername() + "\n"
+                + "pw: " + joinRequest.getPw());
     }
 
     @GetMapping("/api/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest, HttpServletResponse response, BindingResult result) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest, HttpServletResponse response, BindingResult result){
         if(result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getFieldErrors().toString());
         }
-
-        userService.login(loginRequest, response);
-
+        try {
+            userService.login(loginRequest, response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("유저를 찾을 수 없습니다.");
+        }
         return ResponseEntity.ok().body("로그인 성공");
     }
 

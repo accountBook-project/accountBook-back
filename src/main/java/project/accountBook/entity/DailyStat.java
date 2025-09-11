@@ -49,4 +49,8 @@ public class DailyStat extends BaseTimeEntity {
         this.category = category;
         category.getDailyStats().add(this);
     }
+    public void addDailyStatEmotion(DailyStatEmotion dailyStatEmotion) {
+        dailyStatEmotions.add(dailyStatEmotion);
+        dailyStatEmotion.setDailyStat(this);
+    }
 }

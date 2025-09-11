@@ -117,14 +117,15 @@ class AccountBookServiceTest {
 
 
         //then
-        mockMvc.perform(get("/user/accountbook/{type}", DailyStatType.INCOME)
+        mockMvc.perform(get("/user/accountbook/{type}", DailyStatType.EXPENSE)
                         .param("year", "2025")
                         .param("month", "9"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalIncome").value(1000))
                 .andExpect(jsonPath("$.totalExpense").value(12000))
                 .andExpect(jsonPath("$.year").value(2025))
-                .andExpect(jsonPath("$.month").value(9));
+                .andExpect(jsonPath("$.month").value(9))
+                .andExpect(jsonPath("$.percentage.A").value(25));
     }
 
 }

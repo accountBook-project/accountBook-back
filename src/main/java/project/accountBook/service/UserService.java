@@ -12,6 +12,8 @@ import project.accountBook.entity.User;
 import project.accountBook.login.JwtUtil;
 import project.accountBook.repository.UserRepository;
 
+import java.io.IOException;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

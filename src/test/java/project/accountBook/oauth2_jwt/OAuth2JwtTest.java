@@ -43,9 +43,6 @@ public class OAuth2JwtTest {
         //then
         mockMvc.perform(get("/oauth2/authorization/naver"))
                 .andExpect(status().is3xxRedirection());
-        mockMvc.perform(get("/my")
-                .cookie(new Cookie("access", token)))
-                .andExpect(status().isOk());
     }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import project.accountBook.login.JwtFilter;
 import project.accountBook.login.JwtUtil;
 import project.accountBook.login.CustomSuccessHandler;
+import project.accountBook.login.LogoutFilter;
 import project.accountBook.service.CustomOAuth2UserService;
 
 @Configuration
@@ -36,17 +37,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/", "/api/join", "/api/login", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new LogoutFilter(), UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/accountbook/login")
                         .userInfoEndpoint(
                                 userInfoEndpointConfig -> userInfoEndpointConfig.userService(customOAuthUserService))
                         .successHandler(customSuccessHandler))
 
                 .sessionManagement(session
-                        -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(handler ->
-                        handler.authenticationEntryPoint((request, response, authException) ->
-                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
-                        ));
+                        -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
