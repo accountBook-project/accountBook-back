@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface DailyStatRepository extends JpaRepository<DailyStat, Long> {
 
-    Optional<DailyStat> findByUserAndDate(User user, LocalDate date);
+    List<DailyStat> findByUserAndDate(User user, LocalDate date);
 
 
     @Query("select d from DailyStat d where d.user = :user and d.dailyStatType = :dailyStatType" +

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -21,7 +22,9 @@ public class AccountBook extends BaseTimeEntity {
 
     private int years;
     private int months;
+    @Setter
     private long totalIncome;
+    @Setter
     private long totalExpense;
 
     public AccountBook(User user, int years, int months, long totalIncome, long totalExpense) {

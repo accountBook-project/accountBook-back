@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import project.accountBook.dto.AccountBookDto;
@@ -57,10 +56,10 @@ class AccountBookServiceTest {
         AccountBook accountBook2 = new AccountBook(savedUser2, 2025, 11, 300, 3000);
         accountBookRepository.save(accountBook1);
         accountBookRepository.save(accountBook2);
-        Category category1 = new Category(CategoryType.A);
-        Category category2 = new Category(CategoryType.B);
-        Category category3 = new Category(CategoryType.C);
-        Category category4 = new Category(CategoryType.D);
+        Category category1 = new Category(CategoryType.식비);
+        Category category2 = new Category(CategoryType.용돈);
+        Category category3 = new Category(CategoryType.생필품);
+        Category category4 = new Category(CategoryType.의료비);
         Category savedCategory1 = categoryRepository.save(category1);
         Category savedCategory2 = categoryRepository.save(category2);
         Category savedCategory3 = categoryRepository.save(category3);
@@ -101,7 +100,7 @@ class AccountBookServiceTest {
         assertThat(accountBookDto.getTotalIncome()).isEqualTo(1000);
         assertThat(accountBookDto.getYear()).isEqualTo(2025);
         assertThat(accountBookDto.getMonth()).isEqualTo(9);
-        assertThat(accountBookDto.getPercentage().size()).isEqualTo(3);
+        assertThat(accountBookDto.getStat().size()).isEqualTo(3);
     }
 
     @Test
@@ -125,7 +124,7 @@ class AccountBookServiceTest {
                 .andExpect(jsonPath("$.totalExpense").value(12000))
                 .andExpect(jsonPath("$.year").value(2025))
                 .andExpect(jsonPath("$.month").value(9))
-                .andExpect(jsonPath("$.percentage.A").value(25));
+                .andExpect(jsonPath("$.stat.식비").value(3000));
     }
 
 }

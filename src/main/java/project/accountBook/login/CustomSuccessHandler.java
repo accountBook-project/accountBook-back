@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import project.accountBook.dto.CustomUserPrincipal;
@@ -18,6 +19,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
 
+    @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
@@ -25,7 +27,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
         String userId = customUserDetails.getUserId();
         String role = authentication.getAuthorities().stream()
-                .map(grantedAuthority -> grantedAuthority.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .findFirst()
                 .orElse("ROLE_USER");
 
@@ -34,8 +36,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtUtil.createJwt(userId.toString(),"refresh", role, 365L * 24 * 3600000);
         response.addHeader("Set-Cookie", jwtUtil.createdCookie("access", accessToken, 60L * 5).toString());
         response.addHeader("Set-Cookie", jwtUtil.createdCookie("refresh", refreshToken, 365L * 24 * 3600).toString());
-        response.sendRedirect("http://localhost:8080/");
-
+        response.sendRedirect("http://localhost:5173/");
     }
 
 }

@@ -37,7 +37,6 @@ public class OAuth2JwtTest {
     @Test
     public void oAuth_로그인_테스트() throws Exception {
         //given
-        String token = jwtUtil.createJwt("asdsad","access", "ROLE_USER", 10 * 10 * 10L);
         //when
         
         //then

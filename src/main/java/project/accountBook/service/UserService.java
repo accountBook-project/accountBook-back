@@ -42,8 +42,8 @@ public class UserService {
                 throw new RuntimeException("로그인 실패: 비밀번호 불일치");
             }
         }
-        String accessToken = jwtUtil.createJwt(user.getId().toString(), user.getRole(), "access", 60L * 5 * 1000);
-        String refreshToken = jwtUtil.createJwt(user.getId().toString(), user.getRole(), "refresh", 365L * 24 * 3600000);
+        String accessToken = jwtUtil.createJwt(user.getId().toString(), "access", user.getRole(), 60L * 5 * 1000);
+        String refreshToken = jwtUtil.createJwt(user.getId().toString(), "refresh", user.getRole(), 365L * 24 * 3600000);
 
         response.addHeader("Set-Cookie", jwtUtil.createdCookie("access", accessToken, 60L * 5).toString());
         response.addHeader("Set-Cookie", jwtUtil.createdCookie("refresh", refreshToken, 365L * 24 * 3600).toString());

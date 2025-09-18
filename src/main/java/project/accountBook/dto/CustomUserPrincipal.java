@@ -45,7 +45,6 @@ public class CustomUserPrincipal implements OAuth2User, UserDetails {
 
     @Override
     public String getName() {
-
         return userDto.getUsername();
     }
 

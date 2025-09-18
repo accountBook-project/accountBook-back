@@ -81,7 +81,7 @@ class UserServiceTest {
 
         String json = objectMapper.writeValueAsString(loginRequest);
         //when
-        mockMvc.perform(get("/api/login")
+        mockMvc.perform(post("/api/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk())

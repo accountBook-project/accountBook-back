@@ -12,8 +12,6 @@ import project.accountBook.dto.AccountBookDto;
 import project.accountBook.entity.DailyStatType;
 import project.accountBook.service.AccountBookService;
 
-import java.util.Locale;
-
 @RestController
 @RequiredArgsConstructor
 public class AccountBookController {

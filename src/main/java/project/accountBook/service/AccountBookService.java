@@ -11,9 +11,7 @@ import project.accountBook.repository.DailyStatRepository;
 import project.accountBook.repository.UserRepository;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -32,17 +30,14 @@ public class AccountBookService {
         if (user == null) {
             return new AccountBookDto(year, month, 0, 0, null);
         }
-        AccountBook userAccountBook = accountBookRepository.findByUserAndYearsAndMonths(user, year, month);
+        AccountBook userAccountBook = accountBookRepository.findByUserDate(user, year, month).orElse(null);
         LocalDate start = LocalDate.of(year, month, 1);
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
         List<DailyStat> percent = dailyStatRepository.findPercentageBy(user, start, end, dailyStatType);
 
         Map<CategoryType, Long> map = percent.stream()
                 .collect(Collectors.groupingBy(dailyStat -> dailyStat.getCategory().getCategoryType(),
-                        Collectors.summingLong(sum -> sum.getMoney() * 100 /
-                                ((dailyStatType == DailyStatType.INCOME) ? userAccountBook.getTotalIncome()
-                                        : userAccountBook.getTotalExpense()))));
-
+                        Collectors.summingLong(DailyStat::getMoney)));
 
         return new AccountBookDto(userAccountBook.getYears(), userAccountBook.getMonths(),
                 userAccountBook.getTotalIncome(), userAccountBook.getTotalExpense(), map);

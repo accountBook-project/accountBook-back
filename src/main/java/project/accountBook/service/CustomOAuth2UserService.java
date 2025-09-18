@@ -52,6 +52,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
         else {
             existUser.check(oAuth2Response.getName(), oAuth2Response.getEmail());
+            userDto.setUserId(String.valueOf(existUser.getId()));
+            userDto.setUsername(existUser.getUsername());
+            userDto.setRole("ROLE_USER");
         }
 
         return new CustomUserPrincipal(userDto);

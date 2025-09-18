@@ -37,17 +37,25 @@ public class DailyStat extends BaseTimeEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public DailyStat(LocalDate date, Long money, String descriptions, DailyStatType type, User user) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
+
+    public DailyStat(LocalDate date, Long money, String descriptions, DailyStatType dailyStatType,  User user) {
         this.date = date;
         this.money = money;
         this.descriptions = descriptions;
-        this.dailyStatType = type;
+        this.dailyStatType = dailyStatType;
         this.user = user;
     }
 
     public void addCategory(Category category) {
         this.category = category;
         category.getDailyStats().add(this);
+    }
+    public void addPayment(Payment payment) {
+        this.payment = payment;
+        payment.getDailyStats().add(this);
     }
     public void addDailyStatEmotion(DailyStatEmotion dailyStatEmotion) {
         dailyStatEmotions.add(dailyStatEmotion);

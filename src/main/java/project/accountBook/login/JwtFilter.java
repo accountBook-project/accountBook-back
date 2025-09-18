@@ -24,7 +24,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private static final Logger log = LoggerFactory.getLogger(JwtFilter.class);
-
     public JwtFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
@@ -45,21 +44,18 @@ public class JwtFilter extends OncePerRequestFilter {
             } else if (cookie.getName().equals("refresh")) {
                 token = jwtUtil.createJwt(jwtUtil.getUserId(cookie.getValue()), "access", jwtUtil.getRole(cookie.getValue()), 60 * 5 * 1000L);
                 response.addHeader("Set-Cookie", jwtUtil.createdCookie("access", token, 60L * 5).toString());
-            } else {
-                log.debug("token null");
-                filterChain.doFilter(request, response);
-                return;
-
             }
+        }
+        if(token == null) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
         if (jwtUtil.isExpired(token)) {
-            log.debug("token expired");
             filterChain.doFilter(request,response);
 
             return;
         }
-
         String userId = jwtUtil.getUserId(token);
         String role = jwtUtil.getRole(token);
 
@@ -72,6 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
         Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authToken);
+        Authentication a = SecurityContextHolder.getContext().getAuthentication();
 
         filterChain.doFilter(request,response);
 

@@ -11,6 +11,7 @@ import project.accountBook.dto.DailyStatDto;
 import project.accountBook.service.DailyStatService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,14 +19,14 @@ public class DailtStatController {
 
     private final DailyStatService dailyStatService;
 
-    @GetMapping("/dailystat/get")
+    @GetMapping("/user/dailystat/get")
     public ResponseEntity<?> dailyStat(@AuthenticationPrincipal(expression = "userId") String userId,
                                        @RequestParam String date) {
         LocalDate localDate = LocalDate.parse(date);
-        DailyStatDto dailyStatDto = dailyStatService.findDailyStat(Long.valueOf(userId), localDate);
+        List<DailyStatDto> dailyStatDto = dailyStatService.findDailyStat(Long.valueOf(userId), localDate);
         return ResponseEntity.ok(dailyStatDto);
     }
-    @PostMapping("/dailystat/transaction")
+    @PostMapping("/user/dailystat/transaction")
     public ResponseEntity<?> dailyStatCreate(@AuthenticationPrincipal(expression = "userId") String userId,
                                              @RequestBody DailyStatDto dailyStatDto) {
         try {

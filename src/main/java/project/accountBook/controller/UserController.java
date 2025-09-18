@@ -20,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/api/join")
-    public ResponseEntity<String> join(@RequestBody @Valid JoinRequest joinRequest, BindingResult result) {
+    public ResponseEntity<?> join(@RequestBody @Valid JoinRequest joinRequest, BindingResult result) {
         if(result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getFieldErrors().toString());
         }
@@ -32,15 +32,14 @@ public class UserController {
         }
 
         Long id = userService.join(joinRequest);
-
-        return ResponseEntity.ok().body("id: " + id + "\n" + "username: " + joinRequest.getUsername() + "\n"
-                + "pw: " + joinRequest.getPw());
+        return ResponseEntity.ok().body(joinRequest);
     }
 
-    @GetMapping("/api/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest, HttpServletResponse response, BindingResult result){
-        if(result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getFieldErrors().toString());
+    @PostMapping("/api/login")
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest,
+                                   HttpServletResponse response, BindingResult bindingResult){
+        if(bindingResult.hasErrors()) {
+            throw new RuntimeException();
         }
         try {
             userService.login(loginRequest, response);

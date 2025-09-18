@@ -1,5 +1,5 @@
 package project.accountBook.entity;
 
 public enum EmotionType {
-    sad, happy, angry
+    슬픔, 기분전환, 스트레스, 충동구매, flex, 소확행
 }
